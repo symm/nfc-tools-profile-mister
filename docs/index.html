@@ -48,7 +48,11 @@ limitations under the License.
   <body>
     
 
-<button id="scanButton">Scan</button>
+<label>Mister Remote Url</label>
+<input id="url" type="text" value=" " />
+
+<button id="saveButton">Save settings</button>
+<button id="scanButton">Scan NFC</button>
 
 <script>
   var ChromeSamples = {
@@ -103,9 +107,22 @@ log = ChromeSamples.log;
 
 if (!("NDEFReader" in window))
   ChromeSamples.setStatus("Web NFC is not available. Use Chrome on Android.");
+
+
+  var url = localStorage.getItem("url")
+  if (url == null) {
+    url = "http://mister.lan:8182"
+  }
+
+  document.getElementById("url").value = url
 </script>
 
 
+<script>
+  saveButton.addEventListener("click", async () => {
+    localStorage.setItem("url",document.getElementById("url").value)
+  })
+</script>
   
     
       <script>scanButton.addEventListener("click", async () => {
@@ -123,7 +140,12 @@ if (!("NDEFReader" in window))
     ndef.addEventListener("reading", ({ message, serialNumber }) => {
       log(`> Serial Number: ${serialNumber}`);
       log(`> Records: (${message.records.length})`);
-      location.replace("http://mister.lan:8182/load/nfc/" + serialNumber);
+
+
+      var url = document.getElementById("url").value
+      var serial = serialNumber.replaceAll(":","")
+      // Bit hacky but this could be a page on the Remote UI asking the user to confirm load
+      location.replace(url + "/load/nfc/" + serialNumber);
     });
   } catch (error) {
     log("Argh! " + error);
