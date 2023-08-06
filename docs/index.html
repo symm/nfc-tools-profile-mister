@@ -145,7 +145,7 @@ if (!("NDEFReader" in window))
       var url = document.getElementById("url").value
       var serial = serialNumber.replaceAll(":","")
       // Bit hacky but this could be a page on the Remote UI asking the user to confirm load
-      location.replace(url + "/load/nfc/" + serialNumber);
+      location.replace(url + "/load/nfc/" + serial);
     });
   } catch (error) {
     log("Argh! " + error);
